@@ -172,3 +172,12 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# agents
+AGENTS.md
+.skills/
+.agent/
+.agents/
+
+_bmad/
+artifacts/

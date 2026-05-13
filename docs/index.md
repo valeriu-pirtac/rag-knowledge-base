@@ -1,6 +1,6 @@
-# Python Project Template
+# RAG Knowledge Base
 
-A production-ready **FastAPI** project template following **Clean Architecture** principles.
+A production-ready **Retrieval Augmented Generation (RAG) Knowledge Base** project following **Clean Architecture** principles.
 
 ## Quick Start
 
