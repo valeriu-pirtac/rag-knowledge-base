@@ -11,7 +11,7 @@ class TestSettingsDefaults:
         """Test settings load with default values when required fields provided."""
         settings = AppSettings()
 
-        assert settings.app_name == "python-project-template"
+        assert settings.app_name == "rag-knowledge-base"
         assert settings.app_env == "dev"
         assert settings.log_level == "INFO"
         assert settings.log_format == "json"

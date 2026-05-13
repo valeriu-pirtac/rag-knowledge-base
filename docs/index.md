@@ -5,9 +5,9 @@ A production-ready **FastAPI** project template following **Clean Architecture**
 ## Quick Start
 
 ```bash
-git clone https://github.com/valeriu-pirtac/python-project-template
+git clone https://github.com/valeriu-pirtac/rag-knowledge-base
 
-cd python-project-template
+cd rag-knowledge-base
 
 make setup
 

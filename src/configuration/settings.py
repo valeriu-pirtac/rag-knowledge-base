@@ -28,7 +28,7 @@ class AppSettings(BaseAppSettings):
     """
 
     # Application Configuration
-    app_name: str = Field(default="python-project-template", description="Application name")
+    app_name: str = Field(default="rag-knowledge-base", description="Application name")
     app_env: str = Field(
         default="dev", description="Application environment (e.g. dev, staging, prod)"
     )
