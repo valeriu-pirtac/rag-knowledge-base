@@ -1,0 +1,17 @@
+# Main orchestrator — includes all responsibility-grouped compose files
+# Global .env file at project root is auto-loaded by Docker Compose
+name: ${APP_NAME}
+
+include:
+  - docker-compose.storage.yaml
+  - docker-compose.cache.yaml
+  - docker-compose.messaging.yaml
+
+networks:
+  rag_network:
+
+volumes:
+  postgres_data:
+  redis_data:
+  garage_meta:
+  garage_data:

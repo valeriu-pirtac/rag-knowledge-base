@@ -1,0 +1,11 @@
+# Messaging service: NATS JetStream
+services:
+  nats:
+    image: nats:2.10
+    container_name: rag-nats
+    command: ["-js", "--http_port", "${NATS_HTTP_PORT}"]
+    ports:
+      - "${NATS_CLIENT_PORT}:4222"
+      - "${NATS_HTTP_PORT}:8222"
+    networks:
+      - rag_network

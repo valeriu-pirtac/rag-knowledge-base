@@ -1,0 +1,17 @@
+# Cache service: Redis
+services:
+  redis:
+    image: redis:alpine
+    container_name: rag-redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - rag_network
