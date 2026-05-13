@@ -1,4 +1,4 @@
-# python-project-template
+# RAG Knowledge Base
 
 A production-ready **FastAPI** project template built on **Clean Architecture** (Hexagonal Architecture) principles.
 
@@ -24,7 +24,7 @@ A production-ready **FastAPI** project template built on **Clean Architecture** 
 ## Project Structure
 
 ```md
-python-project-template/
+rag-knowledge-base/
 │
 ├── src/
 │   ├── application/                    # Use-case orchestration layer
@@ -125,16 +125,16 @@ make dev-debug   # with debug logging
 
 Copy `.env.example` to `.env` and adjust as needed:
 
-| Variable          | Default                   | Description                               |
-| ----------------- | ------------------------- | ----------------------------------------- |
-| `APP_NAME`        | `python-project-template` | Application Name                          |
-| `APP_ENV`         | `dev`                     | Environment (dev / test / staging / prod) |
-| `LOG_LEVEL`       | `INFO`                    | DEBUG / INFO / WARNING / ERROR / CRITICAL |
-| `LOG_FORMAT`      | `json`                    | `json` or `console`                       |
-| `METRICS_ENABLED` | `true`                    | Enable Prometheus `/metrics`              |
-| `HOST`            | `0.0.0.0`                 | Server bind address                       |
-| `PORT`            | `8000`                    | Server bind port                          |
-| `WORKERS`         | `1`                       | uvicorn worker processes                  |
+| Variable          | Default              | Description                               |
+| ----------------- | -------------------- | ----------------------------------------- |
+| `APP_NAME`        | `rag-knowledge-base` | Application Name                          |
+| `APP_ENV`         | `dev`                | Environment (dev / test / staging / prod) |
+| `LOG_LEVEL`       | `INFO`               | DEBUG / INFO / WARNING / ERROR / CRITICAL |
+| `LOG_FORMAT`      | `json`               | `json` or `console`                       |
+| `METRICS_ENABLED` | `true`               | Enable Prometheus `/metrics`              |
+| `HOST`            | `0.0.0.0`            | Server bind address                       |
+| `PORT`            | `8000`               | Server bind port                          |
+| `WORKERS`         | `1`                  | uvicorn worker processes                  |
 
 ### Development Workflow
 

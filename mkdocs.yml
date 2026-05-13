@@ -1,8 +1,8 @@
 site_name: Python Project Template
 site_description: FastAPI Clean Architecture Project Template
 site_author: Valeriu Pirtac
-repo_url: https://github.com/valeriu-pirtac/python-project-template
-repo_name: python-project-template
+repo_url: https://github.com/valeriu-pirtac/rag-knowledge-base
+repo_name: rag-knowledge-base
 
 theme:
     name: material

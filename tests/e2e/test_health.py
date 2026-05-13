@@ -27,6 +27,6 @@ class TestIndexEndpoint:
 
     def test_index_returns_service_info(self, client: TestClient) -> None:
         data = client.get("/v1/").json()
-        assert data["service"] == "python-project-template"
+        assert data["service"] == "rag-knowledge-base"
         assert data["status"] == "ok"
         assert "version" in data
