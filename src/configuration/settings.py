@@ -29,9 +29,7 @@ class AppSettings(BaseAppSettings):
 
     # Application Configuration
     app_name: str = Field(default="rag-knowledge-base", description="Application name")
-    app_env: str = Field(
-        default="dev", description="Application environment (e.g. dev, staging, prod)"
-    )
+    app_env: str = Field(default="dev", description="Application environment (e.g. dev, staging, prod)")
 
     # Observability Configuration
     log_level: str = Field(default="INFO", description="Logging level")
