@@ -1,0 +1,43 @@
+# Storage services: PostgreSQL 16 (pgvector) + Garage S3
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: rag-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-rag_user} -d ${POSTGRES_DB:-rag_knowledge_base}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/infra/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    networks:
+      - rag_network
+
+  garage:
+    image: dxflrs/garage:v1.0.1
+    container_name: rag-s3
+    command: ["server"]
+    entrypoint: ["/garage", "-c", "/etc/garage/config.toml"]
+    environment:
+      RUST_LOG: ${GARAGE_LOG_LEVEL}
+      GARAGE_CONFIG_FILE: /etc/garage/config.toml
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET}
+    volumes:
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
+      - ./scripts/infra/garage.toml:/etc/garage/config.toml:ro
+    ports:
+      - "${GARAGE_S3_PORT}:3900"
+      - "${GARAGE_WEB_PORT}:3901"
+      - "${GARAGE_RPC_PORT}:3902"
+      - "${GARAGE_ADMIN_PORT}:3903"
+    networks:
+      - rag_network
