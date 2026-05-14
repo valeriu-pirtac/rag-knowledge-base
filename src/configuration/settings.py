@@ -14,7 +14,7 @@ from configuration.network import NetworkConfig
 from configuration.observability import LogConfig, MetricsConfig
 from configuration.security import JWTConfig
 from configuration.server import ServerConfig
-from configuration.storage import GarageConfig, PostgresConfig
+from configuration.storage import DatabaseConfig, IngestionConfig, StorageConfig
 
 
 class BaseAppSettings(BaseSettings):
@@ -40,7 +40,8 @@ class AppSettings(BaseAppSettings):
     jwt: JWTConfig = Field(default_factory=JWTConfig, description="JWT authentication settings")
     server: ServerConfig = Field(default_factory=ServerConfig, description="Server bind settings")
     network: NetworkConfig = Field(default_factory=NetworkConfig, description="Docker network settings")
-    postgres: PostgresConfig = Field(default_factory=PostgresConfig, description="PostgreSQL database settings")
+    postgres: DatabaseConfig = Field(default_factory=DatabaseConfig, description="PostgreSQL database settings")
     redis: RedisConfig = Field(default_factory=RedisConfig, description="Redis cache settings")
     nats: NatsConfig = Field(default_factory=NatsConfig, description="NATS messaging settings")
-    garage: GarageConfig = Field(default_factory=GarageConfig, description="Garage S3 storage settings")
+    garage: StorageConfig = Field(default_factory=StorageConfig, description="Garage S3 storage settings")
+    ingestion: IngestionConfig = Field(default_factory=IngestionConfig, description="Document ingestion settings")

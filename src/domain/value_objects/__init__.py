@@ -1,7 +1,8 @@
-"""Domain value objects.
+"""Domain value objects."""
 
-Value objects are immutable and compared by value rather than identity.
-Place concrete value object classes (e.g. EmailAddress, Money) in this package.
-"""
+from .document_status import DocumentStatus
 
-__all__: list[str] = []
+
+__all__: list[str] = [
+    "DocumentStatus",
+]

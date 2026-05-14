@@ -1,7 +1,10 @@
-"""Application interfaces - Adapter protocols.
+"""Application interfaces - Adapter protocols."""
 
-Defines interfaces that infrastructure adapters must implement.
-These are consumed by use cases and defined in the application layer.
-"""
+from .document_repository import DocumentRepositoryInterface
+from .storage import StorageInterface
 
-__all__: list[str] = []
+
+__all__: list[str] = [
+    "DocumentRepositoryInterface",
+    "StorageInterface",
+]
