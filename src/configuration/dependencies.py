@@ -2,17 +2,13 @@
 
 This module exposes FastAPI-compatible dependency functions that resolve
 concrete infrastructure implementations for each domain protocol.
-
-Usage:
-    from configuration.dependencies import get_settings
-
-    @router.get("/example")
-    async def example(settings: Annotated[AppSettings, Depends(get_settings)]) -> dict:
-        ...
 """
 
 import importlib.metadata
+from collections.abc import AsyncIterator
 from functools import lru_cache
+
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from configuration.settings import AppSettings
 
@@ -41,10 +37,34 @@ def get_app_version(app_name: str) -> str:
         return "unknown"
 
 
-# Add repository / service dependencies here, e.g.:
-#
-# from domain.protocols.item_repository import ItemRepository
-# from infrastructure.in_memory.item_repository import InMemoryItemRepository
-#
-# def get_item_repository() -> ItemRepository:
-#     return InMemoryItemRepository()
+@lru_cache(maxsize=1)
+def create_engine() -> AsyncEngine:
+    """Create an async SQLAlchemy engine from DatabaseConfig. Singleton per app."""
+    postgres = get_settings().postgres
+    dsn = (
+        f"postgresql+asyncpg://{postgres.user}:{postgres.password.get_secret_value()}"
+        f"@{postgres.host}:{postgres.port}/{postgres.db}"
+    )
+    return create_async_engine(dsn, echo=False, pool_pre_ping=True)
+
+
+def get_session_factory() -> async_sessionmaker[AsyncSession]:
+    """Return the singleton session factory."""
+    return async_sessionmaker(create_engine(), class_=AsyncSession, expire_on_commit=False)
+
+
+async def get_session() -> AsyncIterator[AsyncSession]:
+    """Yield an async database session with automatic commit/rollback.
+
+    Commits on success, rolls back on exception.
+    """
+    factory = get_session_factory()
+    async with factory() as session:
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            pass  # engine is long-lived, don't dispose

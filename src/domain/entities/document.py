@@ -1,25 +1,23 @@
-"""Document entity - placeholder for clean architecture verification."""
+"""Document entity - core domain entity for uploaded documents."""
 
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from uuid import UUID, uuid4
+
+from domain.value_objects.document_status import DocumentStatus
 
 
 @dataclass
 class Document:
-    """A domain entity representing an ingested document.
+    """A domain entity representing an ingested document."""
 
-    This is a placeholder entity that verifies the domain layer has
-    zero external dependencies (no FastAPI, no SQLAlchemy, etc.).
-    """
-
-    title: str
-    source_path: str
-    id: UUID = field(default_factory=uuid4)
-
-    def __post_init__(self) -> None:
-        if not self.title:
-            msg = "title must not be empty"
-            raise ValueError(msg)
-        if not self.source_path:
-            msg = "source_path must not be empty"
-            raise ValueError(msg)
+    workspace_id: UUID
+    checksum: str | None = None
+    size: int | None = None
+    mime_type: str | None = None
+    status: DocumentStatus = DocumentStatus.FILE_UPLOAD_PENDING
+    error_message: str | None = None
+    s3_storage_path: str | None = None
+    document_id: UUID = field(default_factory=uuid4)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime = field(default_factory=lambda: datetime.now(UTC))

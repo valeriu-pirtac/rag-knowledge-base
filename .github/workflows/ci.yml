@@ -29,8 +29,8 @@ jobs:
             - name: Type check
               run: uv run mypy src
 
-    test:
-        name: Tests
+    unit-test:
+        name: Unit-Tests
         runs-on: ubuntu-latest
         needs: quality
         steps:
@@ -46,7 +46,7 @@ jobs:
             - name: Install dependencies
               run: uv sync --all-groups
             - name: Run tests with coverage
-              run: uv run pytest tests --cov=src --cov-config=pytest.ini --cov-report=xml --cov-report=term-missing
+              run: uv run pytest tests/unit --cov=src --cov-config=pytest.ini --cov-report=xml --cov-report=term-missing
             - name: Upload coverage report
               uses: actions/upload-artifact@v4
               with:

@@ -1,7 +1,4 @@
-"""Domain entities.
-
-Entities are objects with a unique identity that persists over time.
-"""
+"""Domain entities."""
 
 from .document import Document
 
