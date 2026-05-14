@@ -14,7 +14,12 @@ class TestHealthEndpoint:
 
     def test_health_returns_healthy_status(self, client: TestClient) -> None:
         response = client.get("/v1/health")
-        assert response.json() == {"status": "healthy"}
+        data = response.json()
+        assert data["status"] == "healthy"
+        assert data["app"] == "rag-knowledge-base"
+        assert "environment" in data
+        assert "metricsEnabled" in data
+        assert "version" in data
 
 
 @pytest.mark.e2e

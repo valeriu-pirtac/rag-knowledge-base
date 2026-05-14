@@ -4,7 +4,6 @@ This module initializes the FastAPI application with lifespan management,
 routers, middleware, and observability setup.
 """
 
-import importlib.metadata
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -12,12 +11,14 @@ import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from configuration.dependencies import get_settings
+from configuration.dependencies import get_app_version, get_settings
 from observability.logging import setup_logging
 from observability.metrics import setup_metrics
+from presentation.api.middleware.auth import register_auth_middleware
 from presentation.api.middleware.error_handler import register_exception_handlers
-from presentation.api.middleware.request_logging import RequestLoggingMiddleware
-from presentation.api.v1.routers import health, index
+from presentation.api.middleware.request_logging import register_logging_middleware
+from presentation.api.v1.routers.health import include_health_router
+from presentation.api.v1.routers.index import include_index_router
 
 
 log = structlog.get_logger(__name__)
@@ -25,22 +26,21 @@ log = structlog.get_logger(__name__)
 # Load settings at startup (with validation)
 settings = get_settings()
 
-_VERSION = importlib.metadata.version(settings.app_name)
+_VERSION = get_app_version(settings.app.name)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Manage application startup and shutdown lifecycle."""
     setup_logging()
-    setup_metrics()
     log.info("application.started", version=_VERSION)
     yield
     log.info("application.stopped", version=_VERSION)
 
 
 app = FastAPI(
-    title=settings.app_name,
-    description=f"{settings.app_name} - FastAPI Service",
+    title=settings.app.name,
+    description=f"{settings.app.name}",
     version=_VERSION,
     lifespan=lifespan,
 )
@@ -53,11 +53,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.add_middleware(RequestLoggingMiddleware)
-
-# Exception handlers
+register_logging_middleware(app)
+register_auth_middleware(app)
 register_exception_handlers(app)
 
 # Routers
-app.include_router(health.router)
-app.include_router(index.router)
+include_health_router(app)
+include_index_router(app)
+
+# Metrics instrumentation (must be after middleware registration, before app starts)
+try:
+    setup_metrics(app)
+except Exception:
+    log.warning("metrics.setup_failed", exc_info=True)

@@ -1,22 +1,29 @@
 """Application configuration management with Pydantic Settings.
 
-This module provides centralized, type-safe configuration management for all
-external service dependencies and application settings. Configuration is loaded
-from environment variables and .env files with validation at startup.
+Aggregates all domain-specific config classes into a single AppSettings
+model loaded from environment variables / .env file.
 """
 
-from typing import Literal
-
-from pydantic import Field, field_validator
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from configuration.app import AppConfig
+from configuration.cache import RedisConfig
+from configuration.messaging import NatsConfig
+from configuration.network import NetworkConfig
+from configuration.observability import LogConfig, MetricsConfig
+from configuration.security import JWTConfig
+from configuration.server import ServerConfig
+from configuration.storage import GarageConfig, PostgresConfig
 
 
 class BaseAppSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
+        env_nested_delimiter="_",
         case_sensitive=False,
-        extra="ignore",  # Ignore unknown environment variables
+        extra="ignore",
     )
 
 
@@ -27,36 +34,13 @@ class AppSettings(BaseAppSettings):
     Required fields will raise ValidationError on startup if missing.
     """
 
-    # Application Configuration
-    app_name: str = Field(default="rag-knowledge-base", description="Application name")
-    app_env: str = Field(default="dev", description="Application environment (e.g. dev, staging, prod)")
-
-    # Observability Configuration
-    log_level: str = Field(default="INFO", description="Logging level")
-    log_format: Literal["json", "console"] = Field(default="json", description="Log format")
-    metrics_enabled: bool = Field(default=True, description="Enable Prometheus metrics")
-
-    # Server Configuration
-    host: str = Field(default="0.0.0.0", description="Server bind host")
-    port: int = Field(default=8000, ge=1, le=65535, description="Server bind port")
-    workers: int = Field(default=1, gt=0, description="Number of worker processes")
-
-    @field_validator("log_level")
-    @classmethod
-    def validate_log_level(cls, v: str) -> str:
-        """Validate log level is a valid Python logging level.
-
-        Args:
-            v: Log level to validate
-
-        Returns:
-            Validated log level (uppercase)
-
-        Raises:
-            ValueError: If log level is invalid
-        """
-        valid_levels = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
-        v_upper = v.upper()
-        if v_upper not in valid_levels:
-            raise ValueError(f"Log level must be one of: {', '.join(valid_levels)}")
-        return v_upper
+    app: AppConfig = Field(default_factory=AppConfig, description="Application metadata")
+    log: LogConfig = Field(default_factory=LogConfig, description="Structured logging settings")
+    metrics: MetricsConfig = Field(default_factory=MetricsConfig, description="Prometheus metrics settings")
+    jwt: JWTConfig = Field(default_factory=JWTConfig, description="JWT authentication settings")
+    server: ServerConfig = Field(default_factory=ServerConfig, description="Server bind settings")
+    network: NetworkConfig = Field(default_factory=NetworkConfig, description="Docker network settings")
+    postgres: PostgresConfig = Field(default_factory=PostgresConfig, description="PostgreSQL database settings")
+    redis: RedisConfig = Field(default_factory=RedisConfig, description="Redis cache settings")
+    nats: NatsConfig = Field(default_factory=NatsConfig, description="NATS messaging settings")
+    garage: GarageConfig = Field(default_factory=GarageConfig, description="Garage S3 storage settings")

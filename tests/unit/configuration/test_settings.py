@@ -11,14 +11,14 @@ class TestSettingsDefaults:
         """Test settings load with default values when required fields provided."""
         settings = AppSettings()
 
-        assert settings.app_name == "rag-knowledge-base"
-        assert settings.app_env == "dev"
-        assert settings.log_level == "INFO"
-        assert settings.log_format == "json"
-        assert settings.metrics_enabled
-        assert settings.host == "0.0.0.0"
-        assert settings.port == 8000
-        assert settings.workers == 1
+        assert settings.app.name == "rag-knowledge-base"
+        assert settings.app.env == "dev"
+        assert settings.log.level == "INFO"
+        assert settings.log.format == "json"
+        assert settings.metrics.enabled
+        assert settings.server.host == "0.0.0.0"
+        assert settings.server.port == 8000
+        assert settings.server.workers == 1
 
 
 class TestSingletonPattern:

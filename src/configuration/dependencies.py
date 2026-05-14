@@ -11,6 +11,7 @@ Usage:
         ...
 """
 
+import importlib.metadata
 from functools import lru_cache
 
 from configuration.settings import AppSettings
@@ -30,6 +31,14 @@ def get_settings() -> AppSettings:
         ValidationError: If required settings are missing or invalid
     """
     return AppSettings()
+
+
+def get_app_version(app_name: str) -> str:
+    """Resolve the installed package version, falling back to 'unknown'."""
+    try:
+        return importlib.metadata.version(app_name)
+    except importlib.metadata.PackageNotFoundError:
+        return "unknown"
 
 
 # Add repository / service dependencies here, e.g.:

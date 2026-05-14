@@ -15,7 +15,7 @@ from configuration.dependencies import get_settings
 def setup_logging() -> None:
     """Configure structlog for structured logging."""
     settings = get_settings()
-    log_level = getattr(logging, settings.log_level, logging.INFO)
+    log_level = getattr(logging, settings.log.level, logging.INFO)
 
     shared_processors: list[structlog.types.Processor] = [
         structlog.contextvars.merge_contextvars,
@@ -25,7 +25,7 @@ def setup_logging() -> None:
         structlog.processors.StackInfoRenderer(),
     ]
 
-    if settings.log_format == "json":
+    if settings.log.format == "json":
         renderer: structlog.types.Processor = structlog.processors.JSONRenderer()
     else:
         renderer = structlog.dev.ConsoleRenderer(colors=True)
