@@ -7,6 +7,7 @@ including method, path, status code, and elapsed time.
 import time
 
 import structlog
+from fastapi import FastAPI
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
@@ -31,3 +32,8 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
             elapsed_ms=elapsed_ms,
         )
         return response
+
+
+def register_logging_middleware(app: FastAPI) -> None:
+    """Register request logging middleware on the FastAPI app."""
+    app.add_middleware(RequestLoggingMiddleware)

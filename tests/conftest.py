@@ -14,6 +14,8 @@ from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
 
 from configuration.dependencies import get_settings
+from configuration.observability import LogConfig, MetricsConfig
+from configuration.server import ServerConfig
 from configuration.settings import AppSettings
 from presentation.main import app
 
@@ -22,12 +24,9 @@ from presentation.main import app
 def test_settings() -> AppSettings:
     """Return a settings instance configured for tests."""
     return AppSettings(
-        log_level="DEBUG",
-        log_format="console",
-        metrics_enabled=False,
-        host="127.0.0.1",
-        port=8000,
-        workers=1,
+        log=LogConfig(level="DEBUG", format="console"),
+        metrics=MetricsConfig(enabled=False),
+        server=ServerConfig(host="127.0.0.1", port=8000, workers=1),
     )
 
 
